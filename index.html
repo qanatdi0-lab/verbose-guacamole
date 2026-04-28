@@ -5,82 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container { width: 100%; max-width: 400px; }
-        h1 { font-size: 24px; text-align: center; margin-bottom: 20px; }
-        
-        .product-card {
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .product-info h3 { margin: 0; font-size: 18px; }
-        .product-info p { margin: 5px 0 0; color: #888; }
-        
-        .btn {
-            background-color: var(--tg-theme-button-color, #248bcf);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        body { font-family: sans-serif; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); padding: 20px; }
+        .product-card { background: var(--tg-theme-secondary-bg-color); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .cart-status { background: #248bcf; color: white; padding: 15px; border-radius: 10px; position: sticky; top: 0; margin-bottom: 20px; text-align: center; font-weight: bold; }
+        .btn-add { background: #31b545; color: white; border: none; padding: 8px 15px; border-radius: 8px; }
+        .btn-remove { background: #e53935; color: white; border: none; padding: 8px 15px; border-radius: 8px; margin-left: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🛍 Наш Магазин</h1>
-        
-        <div class="product-card">
-            <div class="product-info">
-                <h3>Пицца Пепперони</h3>
-                <p>2500₸</p>
-            </div>
-            <button class="btn" onclick="sendOrder('Пицца Пепперони', 2500)">Купить</button>
-        </div>
+    <div class="cart-status" id="status">Корзина пуста</div>
 
-        <div class="product-card">
-            <div class="product-info">
-                <h3>Кола 0.5</h3>
-                <p>500₸</p>
-            </div>
-            <button class="btn" onclick="sendOrder('Кола 0.5', 500)">Купить</button>
-        </div>
+    <div class="product-card">
+        <div><b>Пицца</b><br>2500₸</div>
+        <button class="btn-add" onclick="addToCart('Пицца', 2500)">+</button>
+    </div>
 
-        <div class="product-card">
-            <div class="product-info">
-                <h3>Бургер Классик</h3>
-                <p>1800₸</p>
-            </div>
-            <button class="btn" onclick="sendOrder('Бургер Классик', 1800)">Купить</button>
-        </div>
+    <div class="product-card">
+        <div><b>Кола</b><br>500₸</div>
+        <button class="btn-add" onclick="addToCart('Кола', 500)">+</button>
+    </div>
+
+    <div class="product-card">
+        <div><b>Бургер</b><br>1800₸</div>
+        <button class="btn-add" onclick="addToCart('Бургер', 1800)">+</button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+        
+        let cart = [];
+        let totalPrice = 0;
 
-        function sendOrder(name, price) {
-            let data = {
-                item: name,
-                price: price
-            };
-            tg.sendData(JSON.stringify(data)); // Отправляет данные боту
+        function addToCart(name, price) {
+            cart.push(name);
+            totalPrice += price;
+            updateStatus();
         }
+
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (cart.length > 0) {
+                status.innerText = `Итого: ${totalPrice}₸ (${cart.length} шт.)`;
+                tg.MainButton.setText(`ЗАКАЗАТЬ НА ${totalPrice}₸`);
+                tg.MainButton.show();
+            }
+        }
+
+        // Клик по главной кнопке Telegram "ЗАКАЗАТЬ"
+        tg.MainButton.onClick(function() {
+            let data = {
+                items: cart.join(", "),
+                total: totalPrice
+            };
+            tg.sendData(JSON.stringify(data));
+        });
     </script>
 </body>
 </html>
