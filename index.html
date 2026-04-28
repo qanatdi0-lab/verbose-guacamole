@@ -1,25 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
-        button { background: #0088cc; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 18px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container { width: 100%; max-width: 400px; }
+        h1 { font-size: 24px; text-align: center; margin-bottom: 20px; }
+        
+        .product-card {
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-info h3 { margin: 0; font-size: 18px; }
+        .product-info p { margin: 5px 0 0; color: #888; }
+        
+        .btn {
+            background-color: var(--tg-theme-button-color, #248bcf);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Мой мини-магазин</h1>
-    <p>Нажми кнопку, чтобы купить товар:</p>
-    <button onclick="sendOrder()">Купить за 100₸</button>
+    <div class="container">
+        <h1>🛍 Наш Магазин</h1>
+        
+        <div class="product-card">
+            <div class="product-info">
+                <h3>Пицца Пепперони</h3>
+                <p>2500₸</p>
+            </div>
+            <button class="btn" onclick="sendOrder('Пицца Пепперони', 2500)">Купить</button>
+        </div>
+
+        <div class="product-card">
+            <div class="product-info">
+                <h3>Кола 0.5</h3>
+                <p>500₸</p>
+            </div>
+            <button class="btn" onclick="sendOrder('Кола 0.5', 500)">Купить</button>
+        </div>
+
+        <div class="product-card">
+            <div class="product-info">
+                <h3>Бургер Классик</h3>
+                <p>1800₸</p>
+            </div>
+            <button class="btn" onclick="sendOrder('Бургер Классик', 1800)">Купить</button>
+        </div>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        function sendOrder() {
-            let data = { item: "Товар из магазина", price: 100 };
-            tg.sendData(JSON.stringify(data));
+        function sendOrder(name, price) {
+            let data = {
+                item: name,
+                price: price
+            };
+            tg.sendData(JSON.stringify(data)); // Отправляет данные боту
         }
     </script>
 </body>
