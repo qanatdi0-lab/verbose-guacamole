@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        button { background: #0088cc; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Мой мини-магазин</h1>
+    <p>Нажми кнопку, чтобы купить товар:</p>
+    <button onclick="sendOrder()">Купить за 100₸</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function sendOrder() {
+            let data = { item: "Товар из магазина", price: 100 };
+            tg.sendData(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
